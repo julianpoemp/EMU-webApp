@@ -96,7 +96,8 @@ let BundleListSideBarComponent = {
 </div>
 `,
 bindings: {
-	open: '<'
+	open: '<',
+	hide: '<'
 },
 controller: [
 	'$element', 
@@ -121,6 +122,7 @@ controller: [
 	private comment;
 
 	private filterText;
+	private hide;
 
 	private _inited;
 
@@ -161,7 +163,10 @@ controller: [
 	$onChanges (changes) {
 		if(this._inited){
 			if(changes.open){
-				// console.log(changes.open.currentValue);
+                // console.log(changes.open.currentValue);
+				this.hide = false;
+				this.$animate.removeClass(this.$element.find('div')[0], 'emuwebapp-expandBundleListSidebarHidden');
+
 				if(changes.open.currentValue){
 					this.$animate.removeClass(this.$element.find('div')[0], 'emuwebapp-shrinkBundleListSidebarWidthTo0px');
 					this.$animate.addClass(this.$element.find('div')[0], 'emuwebapp-expandBundleListSidebarWidthTo200px');
@@ -170,6 +175,10 @@ controller: [
 					this.$animate.addClass(this.$element.find('div')[0], 'emuwebapp-shrinkBundleListSidebarWidthTo0px');
 				}
 			}
+		}
+
+		if (changes.hide && changes.hide.currentValue) {
+			this.$animate.addClass(this.$element.find('div')[0], 'emuwebapp-expandBundleListSidebarHidden');
 		}
 	}
 

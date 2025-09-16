@@ -19,9 +19,9 @@ let EmuWebAppComponent = {
 		></new-version-hint>
         <!-- end: hint -->
         <!-- start: left side menu bar -->
-		<!-- ng-if="$ctrl.ViewStateService.bundleListSideBarOpen" -->
 		<bundle-list-side-bar 
-		open="$ctrl.ViewStateService.bundleListSideBarOpen">
+		open="$ctrl.ViewStateService.bundleListSideBarOpen"
+		hide="$ctrl.ConfigProviderService.embeddedVals.hideSidebar">
 		</bundle-list-side-bar>
         <!-- end: left side menu bar -->
 
@@ -42,6 +42,11 @@ let EmuWebAppComponent = {
                 ng-show="$ctrl.ConfigProviderService.vals.activeButtons.openMenu" 
                 ng-click="$ctrl.ViewStateService.toggleBundleListSideBar($ctrl.styles.animation.period);" 
                 style="float:left"><i class="material-icons">menu</i></button>
+							
+                <button class="emuwebapp-mini-btn left" 
+                ng-if="$ctrl.ConfigProviderService.vals.activeButtons.saveBundle"
+                ng-click="$ctrl.DbObjLoadSaveService.saveBundle();"
+                style="float:left"><i class="material-icons">save</i> Save</button>
                 
                 <button class="emuwebapp-mini-btn left" 
                 ng-show="$ctrl.ConfigProviderService.vals.activeButtons.addLevelSeg" 
@@ -398,6 +403,7 @@ let EmuWebAppComponent = {
         private BrowserDetectorService;
 		private HierarchyLayoutService;
 		private HandleGlobalKeyStrokes;
+		private hideSidebar = false;
 
         // init vars
 		private connectBtnLabel;
@@ -624,7 +630,11 @@ let EmuWebAppComponent = {
 		 */
 		private loadFilesForEmbeddedApp() {
             var searchObject = this.$location.search();
+			if(searchObject.hasOwnProperty("hideSidebar") && searchObject.hideSidebar === 'true') {
+				this.ConfigProviderService.embeddedVals.hideSidebar = true;
+			}
 			if (searchObject.audioGetUrl || searchObject.bndlJsonGetUrl) {
+
 				if(searchObject.audioGetUrl){
                     this.ConfigProviderService.embeddedVals.audioGetUrl = searchObject.audioGetUrl;
                     this.ConfigProviderService.vals.activeButtons.openDemoDB = false;
@@ -872,12 +882,16 @@ let EmuWebAppComponent = {
 		 * function called after default config was loaded
 		 */
 		private handleDefaultConfigLoaded() {
-
-			if (!this.ViewStateService.getBundleListSideBarOpen()) {
-				this.ViewStateService.toggleBundleListSideBar(styles.animationPeriod);
-			}
 			// check if either autoConnect is set in DBconfig or as get parameter
 			var searchObject = this.$location.search();
+
+			if (!this.ViewStateService.getBundleListSideBarOpen()) {
+				if (searchObject.hasOwnProperty("hideSidebar") && searchObject.hideSidebar === "true") {
+					this.ViewStateService.setBundleListSideBarOpen(false);
+				} else {
+					this.ViewStateService.toggleBundleListSideBar(styles.animationPeriod);
+				}
+			}
 
 			if (this.ConfigProviderService.vals.main.autoConnect || searchObject.autoConnect === 'true') {
 				if (typeof searchObject.serverUrl !== 'undefined') { // overwrite serverUrl if set as GET parameter

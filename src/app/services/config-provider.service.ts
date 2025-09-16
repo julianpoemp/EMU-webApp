@@ -24,7 +24,8 @@ class ConfigProviderService {
 			audioGetUrl: '',
 			labelGetUrl: '',
 			labelType: '',
-			fromUrlParams: false
+			fromUrlParams: false,
+			hideSidebar: false,
 		};
 	}
 	/**

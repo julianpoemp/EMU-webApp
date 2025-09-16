@@ -169,6 +169,9 @@
     @include vendor-prefix(transition, "width "+$animation-period+"ms");
 }
 
+.emuwebapp-expandBundleListSidebarHidden {
+    width: 0;
+}
 .emuwebapp-expandBundleListSidebarWidthTo200px {
     width: 240;
     @include vendor-prefix(transition, "width "+$animation-period+"ms");
